@@ -616,9 +616,29 @@ public:
 		}
 
 		vector<int> bestPath;
+		printf("--------- calling getBestPath with the following parameters:-----\n");
+		printf("currNode: %d\n",currNode);
+		printf("destList: ");
+		for (auto i = destList.begin(); i != destList.end(); ++i)
+			std::cout << *i << ' ';
+		printf("\n");
+		printf("currTimeSlot: %d\n",currTimeSlot);
+		printf("alpha: %f\n",alpha);
+		printf("actualTravelDists: ");
+		for (auto i = actualTravelDists.begin(); i != actualTravelDists.end(); ++i)
+			std::cout << *i << ' ';
+		printf("\n");
+		printf("shortestPathDistances: ");
+		for (auto i = shortestPathDistances.begin(); i != shortestPathDistances.end(); ++i)
+			std::cout << *i << ' ';
+		printf("\n");
 		bestPath = getBestPath( currNode, destList, currTimeSlot, alpha, actualTravelDists, shortestPathDistances);
 		// bestPath = getBestPath2( currNode, make_pair(destList[0], destList[1]), currTimeSlot, alphaV, minFirstLegAlpha).first;
-
+		printf("getBestPath output: ");
+		for (auto i = bestPath.begin(); i != bestPath.end(); ++i)
+			std::cout << *i << ' ';
+		printf("\n");
+		printf("-----------------------------------------------------------------\n");
 		// Erase old path
 		path.erase(path.begin() + lastNodeIndex + 1, path.end());
 
