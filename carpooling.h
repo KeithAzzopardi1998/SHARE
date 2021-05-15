@@ -1701,7 +1701,7 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 		if (!alphaImpossible) dag.push_back( make_pair(-distanceToDestination[0][ i ], i ) );
 	}
 
-	printf("Done! %d\n",(int)dag.size()); fflush(stdout);
+	printf("findDAGExtendedPath: Done building extended DAG of size %d\n",(int)dag.size()); fflush(stdout);
 
 	vector<int> path;
 	if(dag.size() <= 1)
@@ -1974,7 +1974,7 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 		vector <double> dummy(N);
 		path= dijkstra_lengths(N, source, firstDestination, dummy, edges, edgeWeight);
 		short_outputs+=1;
-		cout<<"shortestpaths= "<<short_outputs<<endl;
+		cout<<"findDAGExPath: shortestpaths= "<<short_outputs<<endl;
 		return make_pair(-1,path);
 	}
 	
@@ -2004,26 +2004,28 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 	}
 	reverse(path.begin(), path.end());
 
-	cout<<"BEST SCORE: dex 0.3  "<<max_score<<endl;
+	cout<<"findDAGExPath: BEST SCORE: dex 0.3  "<<max_score<<endl;
 	double pathlen=getPathDist(path, edges, edgeWeight);
-	cout<<"Pathlen= "<<pathlen<<endl;
-	cout<<"delta_dist= "<<delta_dist<<endl;
+	cout<<"findDAGExPath: Pathlen= "<<pathlen<<endl;
+	cout<<"findDAGExPath: delta_dist= "<<delta_dist<<endl;
 	// for(int i=0;i<path.size();i++ )
 	// {
 	// 	cout<<path[i]<<endl;
 	// }
 	double pathlen2=distanceFromSource[firstDestination];
-	cout<<"disjkstra Pathlen= "<<pathlen2<<endl;
+	cout<<"findDAGExPath: disjkstra Pathlen= "<<pathlen2<<endl;
 
 	if (DEBUG && dag.size() <= 40) {
-		printf("s:%d e:%d\n",startIndex, endIndex);
+		printf("findDAGExPath: start: %d end: %d\n",startIndex, endIndex);
+		printf("findDAGExPath: DAG index | node score\n");
 		for(int i = 0; i < dag.size(); i++) {
 			int u = dag[i].second;
 			double node_score = get_expected_trips(u, destinations, timeSlot, defaultAlpha, actualTravelDists, 0, shortestPathDistances, 
 						dataset, distanceToDestination, distanceFromDestination);
-			printf("%d %.4f\n",i,node_score);
+			printf("%d | %.4f\n",i,node_score);
 
 		}
+		printf("findDAGExPath: DAG index (u) | DAG index (v) | edge weight\n");
 		for (int i = 0; i<dag.size(); i++) {
 			int u = dag[i].second;
 			for(int j = 0; j < edges[u].size(); j++) {
@@ -2033,15 +2035,15 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 				//some nodes are adjacent to themselves in the graph
 				if(u == v)
 					continue;
-				printf("%d %d %.4f\n",nodeToDagIndex[u], nodeToDagIndex[v],edgeWeight[ u ][ j ]);
+				printf("%d | %d | %.4f\n",nodeToDagIndex[u], nodeToDagIndex[v],edgeWeight[ u ][ j ]);
 			}
 		}
-		printf("Path (DAG index): ");
+		printf("findDAGExPath: Path (DAG index): ");
 		for (int i=0; i<path.size(); i++) {
 			printf(" %d",nodeToDagIndex[path[i]]);
 		}
 		printf("\n");
-		printf("Path (nodes): ");
+		printf("findDAGExPath: Path (nodes): ");
 		for (int i=0; i<path.size(); i++) {
 			printf(" %d",path[i]);
 		}
