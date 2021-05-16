@@ -2,6 +2,7 @@
 #include "ioD.h"
 
 int DEBUG = 1;
+const int DELTA_TIME = 1;
 const int DISCRETE_TIME = 100;
 const int MAX_DISTANCE = 1000000;
 const bool TIME_VARYING = false;
@@ -212,4 +213,62 @@ void takeGraphInput(char * locationInputName,char * edgeInputName, string locati
 	Location.close();
 	cout<<"finished loading graph"<<endl;
 	return ;
+}
+
+vector< unordered_map<int, vector<request> > > loadDataset(char * datasetName, string location) {
+	
+	vector< unordered_map<int, vector<request> > > sourceTimeDestination; 
+	
+	ifstream file;
+	file.open( datasetName );
+	string s;
+	sourceTimeDestination.resize( nodeID.size() );
+	//passengerRequest.resize( MAX_END_TIME / DELTA_TIME );
+	int trips = 0;
+
+	int startTime  = 0;
+	int endTime = 24*60;
+	int DAY = 24;
+
+	set<int> weekdays;
+	int NY_WEEKDAYS[] = {2,3,4,7,8,9,10,11,14,15,16,17,18,22,23,24,25,28,29,30,31};
+	weekdays.insert(NY_WEEKDAYS, NY_WEEKDAYS + sizeof(NY_WEEKDAYS) / sizeof(int));
+
+	while( getline(file, s) ) 
+	{
+		stringstream ss( s );
+		int date, source, timeSlot, dest;
+		double rev = 0.0;
+		ss>>date>>source>>timeSlot>>dest;
+		if (location.compare("NY") == 0 || location.compare("SG") == 0) {
+			ss >> rev;
+		}
+		
+
+		timeSlot /= DELTA_TIME;
+		// printf("Hello %d %d %d %d\n",date,source,timeSlot,dest);
+		if (date > DAY) continue;
+		if (weekdays.find(date) == weekdays.end()) continue;
+		if (timeSlot >= endTime / DELTA_TIME) continue;
+
+		if (source < nodeID.size() && dest < nodeID.size() && timeSlot >= startTime / DELTA_TIME) {
+			trips++;
+
+			request req;
+			req.id = trips; req.source = source; req.timeSlot = timeSlot; req.destination = dest; req.revenue = rev;
+			// printf("trips %d: D%d T%d %d(%.4f,%.4f)->%d(%.4f,%.4f)\n",trips,date,timeSlot,source,nodesToLatLon[source].first,nodesToLatLon[source].second,dest,nodesToLatLon[dest].first,nodesToLatLon[dest].second);
+
+			if( date < DAY ) {
+				sourceTimeDestination[ source ][ timeSlot/MINUTE_PER_HISTORY_SLOT ].push_back( req );
+			}
+			//else {
+			//	passengerRequest[ timeSlot ][ source ].push_back( req );	
+			//}
+		}
+		
+	}
+
+	file.close();
+	//cout<<trips<<endl;
+	return sourceTimeDestination;
 }

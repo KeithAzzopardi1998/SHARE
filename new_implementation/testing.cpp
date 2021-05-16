@@ -11,17 +11,24 @@ int main(int argc, char const *argv	[])
 
 
     int source = 49421;
+    int destination = 19889;
 
     vector<int> destinations(1);
-    destinations[0] = 19889;
+    destinations[0] = destination;
 
     int timeSlot = 480;
 
     double alpha = 1.2;
-    vector<double> actualTravelDists = ;
-    vector<double> shortestPathDistances = ;
+
+    vector<double> actualTravelDists(destinations.size());
+    actualTravelDists[0] = 0.0;
+
+    vector<double> shortestPathDistances(destinations.size());
+    shortestPathDistances[0] = query(source,destination);
+    
     double maxDepth = 0.2;
-    vector< unordered_map<int, vector<request> > > sourceTimeDestination =;
+    
+    vector< unordered_map<int, vector<request> > > dataset = loadDataset("../ny_output_price","NY");
 
 	vector< double > distanceFromSource( nodeID.size() );
 	vector<vector< double > > distanceFromDestination( destinations.size() );
@@ -49,7 +56,7 @@ int main(int argc, char const *argv	[])
                                 actualTravelDists,
                                 shortestPathDistances,
                                 maxDepth,
-                                sourceTimeDestination,
+                                dataset,
                                 distanceFromSource,
                                 distanceToDestination,
                                 distanceFromDestination,
