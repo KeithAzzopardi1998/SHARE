@@ -6,10 +6,13 @@
 int main(int argc, char const *argv	[])
 {
     pair<double, vector<int> > path;
-
+    printf("MAIN: loading graph\n");
 	takeGraphInput("../ny_location","../ny_edge_time","NY");
 
+    printf("MAIN: loading index\n");
+    loadIndex("../nyIndex.deg","../nyIndex.labelin","../nyIndex.labelout");
 
+    printf("MAIN: setting constants\n");
     int source = 49421;
     int destination = 19889;
 
@@ -28,18 +31,19 @@ int main(int argc, char const *argv	[])
     
     double maxDepth = 0.2;
     
+    printf("MAIN: loading dataset\n");
     vector< unordered_map<int, vector<request> > > dataset = loadDataset("../ny_output_price","NY");
 
+    printf("MAIN: calculating distances\n");
 	vector< double > distanceFromSource( nodeID.size() );
 	vector<vector< double > > distanceFromDestination( destinations.size() );
 	vector<vector< double > > distanceToDestination( destinations.size() );
-
     int firstDestination = destinations[0];
-    if(distanceFromSource[firstDestination] == MAX_DISTANCE || !distanceFromSource[ firstDestination ] ) {
-		printf("Cannot reach destination?\n");
-		vector<int> emptyPath;
-		exit;
-	}
+    //if(distanceFromSource[firstDestination] == MAX_DISTANCE || !distanceFromSource[ firstDestination ] ) {
+	//	printf("Cannot reach destination?\n");
+	//	vector<int> emptyPath;
+	//	exit;
+	//}
 
 	for (int i=0; i<destinations.size(); i++) {
 		distanceToDestination[i].resize( nodeID.size() );
@@ -48,6 +52,13 @@ int main(int argc, char const *argv	[])
 		dijkstra_lengths(nodeID.size(), destinations[i], source, distanceFromDestination[i], edges, edgeWeight);
 	}
 
+    printf("MAIN: assigning extended edges\n");
+    assignExtendEdge(nodeID.size(), maxDepth, edges, edgeWeight);
+
+    printf("MAIN: generating nearby nodes\n");
+    generateNearbyNodes(nodeID.size(), edges, edgeWeight);
+
+    printf("MAIN: calculating path\n");
     path = findDAGExtendedPath( nodeID.size(),
                                 source,
                                 destinations,

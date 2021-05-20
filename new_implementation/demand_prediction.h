@@ -73,15 +73,15 @@ double getClusterScore(int v, vector<int> &destinations, int start_time, double 
 	vector< unordered_map<int, vector<request> > > &dataset, const vector<vector< double > > &distanceToDestination, const vector<vector< double> > &distanceFromDestination) {	
 
 	double scoreReturn=0;
-
 	for(int i=0;i<=nearbyNodes[ v ].size();i++)
 	{
-		
 		if(destinations.size()==1)
 		{
 			int u;
 			double uDist;
 			vector<request> trips;
+
+			//printf("getClusterScore: nearbyNodes[v].size() is %d\n",nearbyNodes[v].size());
 
 			if(i == nearbyNodes[v].size())
 			{
@@ -112,6 +112,7 @@ double getClusterScore(int v, vector<int> &destinations, int start_time, double 
 			double sigmoidConst = 0.1;
 			double origDist=0;
 			origDist = distanceToDestination[ 0 ][ v ];
+
 			for(int j = 0; j < trips.size(); j++) 
 			{
 				int dest2 = trips[ j ].destination;
@@ -152,7 +153,6 @@ double getClusterScore(int v, vector<int> &destinations, int start_time, double 
 
 		if(destinations.size() == 2)
 		{
-			
 			int u;
 			double uDist;
 			vector<request> trips;
@@ -278,7 +278,6 @@ double getClusterScore(int v, vector<int> &destinations, int start_time, double 
 
 	// printf("Before log %d = %.2f... ",v, scoreReturn); fflush(stdout);
 	//scoreReturn= log(1+ scoreReturn);
-
 	// printf("Get Cluster Score at %d = %.2f\n",v, scoreReturn); fflush(stdout);
 	return scoreReturn;
 	

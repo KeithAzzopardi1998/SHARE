@@ -20,7 +20,6 @@ struct request {
 	double revenue;
 };
 
-char * degName, * outName, *inName;
 edgeL * deg;
 edgeS * labelout, *labelin;
 edgeS * labelx, * labely;
@@ -45,22 +44,21 @@ vector< vector<double> > edgeTime;
 // Takes in node index
 double query(int x, int y)
 {	
-	if (x == y) return 0;
 
+	if (x == y) return 0;
+	// TODO check if it would make sense to do this
 	// if we already have this key pair value then return 
-	if( frequentPickup[ x ] && frequentDrop[ y ] ) {
-		return distanceFrequentNodes[ x ][ y ];
-	}
-	
+	// if( frequentPickup[ x ] && frequentDrop[ y ] ) {
+	// 	return distanceFrequentNodes[ x ][ y ];
+	// }
 	if( timeOptimize.find( make_pair(x, y) ) != timeOptimize.end() ) {
 		return timeOptimize[ make_pair(x, y) ]; 
 	}
-
 	int xx = x, yy = y;
 
 	x = ((deg[xx].x<<32)>>32);
 	y = ((deg[yy].x<<32)>>32);
-		
+	
 	if (x > y)
 	{
 		labelx = labelout + deg[xx].w;
@@ -90,7 +88,7 @@ double query(int x, int y)
 		}
 		else if (labely[++j].x == -1) break;
 	}
-	
+
 	while (labelx[i].x != -1 && labelx[i].x < y) i++;
 	if (labelx[i].x == y) ans = ans>labelx[i].w?labelx[i].w:ans;
 
@@ -101,7 +99,7 @@ double query(int x, int y)
 	return float(ans)/1000;
 }
 
-void loadIndex()
+void loadIndex(char* degName, char* inName, char* outName)
 {
 	long long n;
 	inBufL degBuf(degName);

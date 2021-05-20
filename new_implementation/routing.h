@@ -141,7 +141,6 @@ int short_outputs=0;
 pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> destinations, int timeSlot, double defaultAlpha, vector<double> &actualTravelDists, vector<double> &shortestPathDistances, double maxDepth, vector< unordered_map<int, vector<request> > > &dataset,
 	const vector< double > &distanceFromSource, const vector<vector< double > > &distanceToDestination, const vector<vector< double > > &distanceFromDestination, const vector< vector<long long int> > &edges, const vector< vector<double> > &edgeWeight) {
 
-
 	int firstDestination = destinations[0];
 
 	map<int, int> dummy;
@@ -168,8 +167,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 		if (!alphaImpossible) dag.push_back( make_pair(-distanceToDestination[0][ i ], i ) );
 	}
 
-	printf("findDAGExtendedPath: Done building extended DAG of size %d\n",(int)dag.size()); fflush(stdout);
-
 	vector<int> path;
 	if(dag.size() <= 1)
 	{
@@ -186,7 +183,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 	vector< vector <pair<double, double> > > scores( dag.size() );
 	vector< vector< pair<vector<int> ,int > > > store( dag.size() );
 
-	
 	vector< int> nodeToDagIndex(N);
 	vector< int> dagIndexToNode(N);
 	for (int i=0; i<N; i++) {
@@ -234,7 +230,7 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 	store[startIndex][0].second =-1;
 
 	for(int i = startIndex; i < dag.size(); i++) 
-	{
+	{	
 		for(int k=0;k<=DISCRETE_TIME;k++)
 		{
 			int u = dag[i].second;
@@ -243,7 +239,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 			// cout << i << " " << k << endl;
 			for(int j = 0; j < extendEdge[u].size(); j++) 
 			{
-				
 				pair<double, vector<int> > v = extendEdge[u][j];
 				bool continueLoop = false;
 				bool invalidNode = false;
@@ -279,7 +274,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 
 				if( continueLoop || invalidNode )
 					continue;
-
 				map< int, int> markNodes;
 				for(int k1 = 1; k1 < pathSize ; k1++ ) {
 					markNodes[ ex_edge[ k1 ] ] = 1;
@@ -290,7 +284,7 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 				bool reachAbleError = false;
 				int traceLoc = nodeToDagIndex[ u ];
 				int trace_time = k;
-
+				
 				// bscktracking checking
 				while ( (traceLoc != -1 ) && ( !reachAbleError ) ) 
 				{
@@ -340,6 +334,7 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 
 					int pathNode = ex_edge[pat];
 					double pres_edge = 0;
+
 					for( int edgeIndex = 0; edgeIndex < edges[ ex_edge[ pat- 1 ] ].size(); edgeIndex++)
 					{
 						if( edges[ ex_edge[ pat - 1 ] ][ edgeIndex ] == ex_edge[ pat ] ) 
@@ -348,7 +343,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 							break;
 						}
 					}
-
 					totalEdgeDist += pres_edge;
 					int offset= (DISCRETE_TIME * totalEdgeDist / delta_dist);
 					double newDist = (prevNodeDist + totalEdgeDist);
@@ -357,7 +351,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 					{
 						timeOffset= ((int)(newDist/SPEED))/MINUTE_PER_HISTORY_SLOT;
 					}
-
 					double node_score = 0;
 
 					if(USE_CLUSTER)
@@ -375,7 +368,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 					total_nodescore += node_score;
 
 				}
-
 				// cout<<"huh3 "<<endl;
 
 				double totaloffset1= (DISCRETE_TIME * totalEdgeDist / delta_dist);
@@ -392,9 +384,7 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 						scores[ nodeToDagIndex[ lastNode ] ][ newTime ].second = scores[ i ][ k ].second + totalEdgeDist;
 						store[ nodeToDagIndex[ lastNode ] ][ newTime ] = make_pair(ex_edge, k);
 					}
-				}
-
-					
+				}					
 			}
 		}
 		
@@ -417,7 +407,6 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
  //        if(flag==1)
  //        	cout<<endl;
  //    }
-
 	// backtracking -> needed to change just like updation
 	double max_score=-1;
 	// long long int maxindex=-1;
@@ -482,40 +471,40 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 	double pathlen2=distanceFromSource[firstDestination];
 	cout<<"findDAGExPath: disjkstra Pathlen= "<<pathlen2<<endl;
 
-	if (DEBUG && dag.size() <= 40) {
-		printf("findDAGExPath: start: %d end: %d\n",startIndex, endIndex);
-		printf("findDAGExPath: DAG index | node score\n");
-		for(int i = 0; i < dag.size(); i++) {
-			int u = dag[i].second;
-			double node_score = get_expected_trips(u, destinations, timeSlot, defaultAlpha, actualTravelDists, 0, shortestPathDistances, 
-						dataset, distanceToDestination, distanceFromDestination);
-			printf("%d | %.4f\n",i,node_score);
+	printf("findDAGExPath: start: %d end: %d\n",startIndex, endIndex);
+	/*
+	printf("findDAGExPath: DAG index | node score\n");
+	for(int i = 0; i < dag.size(); i++) {
+		int u = dag[i].second;
+		double node_score = get_expected_trips(u, destinations, timeSlot, defaultAlpha, actualTravelDists, 0, shortestPathDistances, 
+					dataset, distanceToDestination, distanceFromDestination);
+		printf("%d | %.4f\n",i,node_score);
 
-		}
-		printf("findDAGExPath: DAG index (u) | DAG index (v) | edge weight\n");
-		for (int i = 0; i<dag.size(); i++) {
-			int u = dag[i].second;
-			for(int j = 0; j < edges[u].size(); j++) {
-				int v = edges[u][j];
-				if( nodeToDagIndex[ v ] == -1 )
-					continue;
-				//some nodes are adjacent to themselves in the graph
-				if(u == v)
-					continue;
-				printf("%d | %d | %.4f\n",nodeToDagIndex[u], nodeToDagIndex[v],edgeWeight[ u ][ j ]);
-			}
-		}
-		printf("findDAGExPath: Path (DAG index): ");
-		for (int i=0; i<path.size(); i++) {
-			printf(" %d",nodeToDagIndex[path[i]]);
-		}
-		printf("\n");
-		printf("findDAGExPath: Path (nodes): ");
-		for (int i=0; i<path.size(); i++) {
-			printf(" %d",path[i]);
-		}
-		printf("\n");
 	}
+	printf("findDAGExPath: DAG index (u) | DAG index (v) | edge weight\n");
+	for (int i = 0; i<dag.size(); i++) {
+		int u = dag[i].second;
+		for(int j = 0; j < edges[u].size(); j++) {
+			int v = edges[u][j];
+			if( nodeToDagIndex[ v ] == -1 )
+				continue;
+			//some nodes are adjacent to themselves in the graph
+			if(u == v)
+				continue;
+			printf("%d | %d | %.4f\n",nodeToDagIndex[u], nodeToDagIndex[v],edgeWeight[ u ][ j ]);
+		}
+	}
+	*/
+	printf("findDAGExPath: Path (DAG index): ");
+	for (int i=0; i<path.size(); i++) {
+		printf(" %d",nodeToDagIndex[path[i]]);
+	}
+	printf("\n");
+	printf("findDAGExPath: Path (nodes): ");
+	for (int i=0; i<path.size(); i++) {
+		printf(" %d",path[i]);
+	}
+	printf("\n");
 
 	return make_pair(max_score, path);
 }
