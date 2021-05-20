@@ -377,3 +377,6 @@ double get_expected_trips(int v, vector<int> &d, int start_time, double alpha, v
 	// return counter;
 }
 
+double get_expected_trips_mock() {
+	return 1.0;
+}
