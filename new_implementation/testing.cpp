@@ -58,6 +58,8 @@ int main(int argc, char const *argv	[])
     printf("MAIN: generating nearby nodes\n");
     generateNearbyNodes(nodeID.size(), edges, edgeWeight);
 
+    printf("\n\n\nMAIN: shortest distance (calculated by query): %f\n",query(source,destination));
+
     printf("\n\n\nMAIN: calculating path with mocked node score\n");
     path = findDAGExtendedPath( nodeID.size(),
                                 source,

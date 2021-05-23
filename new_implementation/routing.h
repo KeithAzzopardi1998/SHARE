@@ -473,7 +473,7 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 	// 	cout<<path[i]<<endl;
 	// }
 	double pathlen2=distanceFromSource[firstDestination];
-	cout<<"findDAGExPath: disjkstra Pathlen= "<<pathlen2<<endl;
+	//cout<<"findDAGExPath: disjkstra Pathlen= "<<pathlen2<<endl;
 
 	printf("findDAGExPath: start: %d end: %d\n",startIndex, endIndex);
 	/*
