@@ -133,13 +133,13 @@ void assignExtendEdge(int N, double maxDepth, const vector< vector<long long int
 		cnt_extended += paths.size();
 		extendEdge[ i ] = paths;
 	}
-	printf("Extend edge assigned (Total = %d)\n",cnt_extended); fflush(stdout);
+	//printf("Extend edge assigned (Total = %d)\n",cnt_extended); fflush(stdout);
 }
 
 int short_outputs=0;
 
 pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> destinations, int timeSlot, double defaultAlpha, vector<double> &actualTravelDists, vector<double> &shortestPathDistances, double maxDepth, vector< unordered_map<int, vector<request> > > &dataset,
-	const vector< double > &distanceFromSource, const vector<vector< double > > &distanceToDestination, const vector<vector< double > > &distanceFromDestination, const vector< vector<long long int> > &edges, const vector< vector<double> > &edgeWeight) {
+	const vector< double > &distanceFromSource, const vector<vector< double > > &distanceToDestination, const vector<vector< double > > &distanceFromDestination, const vector< vector<long long int> > &edges, const vector< vector<double> > &edgeWeight, int nodeScoreMode) {
 
 	int firstDestination = destinations[0];
 
@@ -353,14 +353,18 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 					}
 					double node_score = 0;
 
-					if(USE_CLUSTER)
+					if (nodeScoreMode == 0)//mock the node score
 					{
-						node_score = getClusterScore(pathNode, destinations, timeSlot + timeOffset, defaultAlpha, actualTravelDists, newDist, shortestPathDistances, 
-						dataset, distanceToDestination, distanceFromDestination);
+						node_score = 1;
 					}
-					else
+					else if(nodeScoreMode == 1)//baseline node scoring
 					{
 						node_score = get_expected_trips(pathNode, destinations, timeSlot + timeOffset, defaultAlpha, actualTravelDists, newDist, shortestPathDistances, 
+						dataset, distanceToDestination, distanceFromDestination);
+					}
+					else if(nodeScoreMode == 2)//clustered node scoring
+					{
+						node_score = getClusterScore(pathNode, destinations, timeSlot + timeOffset, defaultAlpha, actualTravelDists, newDist, shortestPathDistances, 
 						dataset, distanceToDestination, distanceFromDestination);
 					}
 					// double node_score = getClusterScore(pathNode, destinations, timeSlot + ((int)(newDist/SPEED))/MINUTE_PER_HISTORY_SLOT, defaultAlpha, actualTravelDists, newDist, shortestPathDistances,
@@ -460,10 +464,10 @@ pair<double, vector<int> >findDAGExtendedPath(int N, int source, vector<int> des
 	}
 	reverse(path.begin(), path.end());
 
-	cout<<"findDAGExPath: BEST SCORE: dex 0.3  "<<max_score<<endl;
+	cout<<"findDAGExPath: BEST SCORE: "<<max_score<<endl;
 	double pathlen=getPathDist(path, edges, edgeWeight);
 	cout<<"findDAGExPath: Pathlen= "<<pathlen<<endl;
-	cout<<"findDAGExPath: delta_dist= "<<delta_dist<<endl;
+	//cout<<"findDAGExPath: delta_dist= "<<delta_dist<<endl;
 	// for(int i=0;i<path.size();i++ )
 	// {
 	// 	cout<<path[i]<<endl;

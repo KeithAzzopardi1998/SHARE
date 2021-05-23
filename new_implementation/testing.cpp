@@ -58,7 +58,7 @@ int main(int argc, char const *argv	[])
     printf("MAIN: generating nearby nodes\n");
     generateNearbyNodes(nodeID.size(), edges, edgeWeight);
 
-    printf("MAIN: calculating path\n");
+    printf("\n\n\nMAIN: calculating path with mocked node score\n");
     path = findDAGExtendedPath( nodeID.size(),
                                 source,
                                 destinations,
@@ -72,5 +72,40 @@ int main(int argc, char const *argv	[])
                                 distanceToDestination,
                                 distanceFromDestination,
                                 edges,
-                                edgeWeight);
+                                edgeWeight,
+                                0);
+
+    printf("\n\n\nMAIN: calculating path with baseline node score\n");
+    path = findDAGExtendedPath( nodeID.size(),
+                                source,
+                                destinations,
+                                timeSlot/MINUTE_PER_HISTORY_SLOT,
+                                alpha,
+                                actualTravelDists,
+                                shortestPathDistances,
+                                maxDepth,
+                                dataset,
+                                distanceFromSource,
+                                distanceToDestination,
+                                distanceFromDestination,
+                                edges,
+                                edgeWeight,
+                                1);
+
+    printf("\n\n\nMAIN: calculating path with clustered node score\n");
+    path = findDAGExtendedPath( nodeID.size(),
+                                source,
+                                destinations,
+                                timeSlot/MINUTE_PER_HISTORY_SLOT,
+                                alpha,
+                                actualTravelDists,
+                                shortestPathDistances,
+                                maxDepth,
+                                dataset,
+                                distanceFromSource,
+                                distanceToDestination,
+                                distanceFromDestination,
+                                edges,
+                                edgeWeight,
+                                2);
 }
