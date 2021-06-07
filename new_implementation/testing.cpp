@@ -13,8 +13,8 @@ int main(int argc, char const *argv	[])
     loadIndex("../nyIndex.deg","../nyIndex.labelin","../nyIndex.labelout");
 
     printf("MAIN: setting constants\n");
-    int source = 49421;
-    int destination = 19889;
+    int source = 39979;//49421;
+    int destination = 31351;//19889;
 
     vector<int> destinations(1);
     destinations[0] = destination;
